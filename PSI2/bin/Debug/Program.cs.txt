@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using System.Diagnostics;
+
+namespace LectureImage
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            byte[] myfile = File.ReadAllBytes("Test003.bmp");
+            Process.Start("Test003.bmp");
+            Console.WriteLine("Header \n");
+            for (int i = 0; i < 14; i++)
+                Console.Write(myfile[i] + " ");
+            Console.WriteLine("\n HEADER INFO \n\n");
+            for (int i = 14; i< 54; i++)
+                Console.Write(myfile[i] + " ");
+            Console.WriteLine("\n\n IMAGE \n");
+            for (int i = 54; i < myfile.Length; i++)
+            { Console.Write(myfile[i] + "\t");
+                if (myfile[i] == 0) myfile[i] = 255;
+                else myfile[i] = 0;
+            }
+
+            File.WriteAllBytes("Sortie.bmp", myfile);
+            Process.Start("Sortie.bmp");
+            Console.ReadLine();
+        }
+    }
+}
