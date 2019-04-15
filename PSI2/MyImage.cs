@@ -7,6 +7,7 @@ namespace PSI2
     class MyImage
     {
         #region Attributs
+        private string filename;
         private string imageType;
         private int tailleFichier;
         private int tailleOffset;
@@ -23,6 +24,7 @@ namespace PSI2
         /// <param name="fileName"></param>
         public MyImage(string fileName)
         {
+            this.filename = filename;
             byte[] myfile = null;
             //Process.Start(fileName); // Affiche le fichier
             if (fileName[fileName.Length - 1] == 'v')
@@ -107,7 +109,11 @@ namespace PSI2
         /// <param name="hauteur"></param>
         public MyImage(string filename, int largeur, int hauteur)
         {
-            Mandelbrot(hauteur, largeur);
+            this.largeur = largeur;
+            this.hauteur = hauteur;
+            this.filename = filename;
+            CreerBMP();
+            
         }
         #endregion
 
@@ -1252,12 +1258,33 @@ namespace PSI2
             return pixelTemp;
         }
         #endregion
-        
+
         #region TD4
-        public byte[] CreerBMP(string filename, int largeur, int hauteur)
+        
+        /// <summary>
+        /// Passage de la Matrice de Pixel au tableau de Byte
+        /// </summary>
+        /// <returns></returns>
+        public byte[] ConvertirMatricePixel()
         {
-            int tailleFichier = largeur * hauteur * 3 + 54;
-            byte[] data = new byte[tailleFichier];
+            byte[] data = new byte[this.image.GetLength(0) + this.image.GetLength(1)];
+            for (int i = 0; i < this.image.GetLength(0); i++)
+            {
+                for (int j = 0; j < this.image.GetLength(1); j++)
+                {
+                    data[i + j + 54] = this.image[i, j].Red;
+                    data[i + j + 54 + 1] = this.image[i, j].Green;
+                    data[i + j + 54 + 2] = this.image[i, j].Blue;
+                }
+            }
+            AfficherTableauByte(data);
+            return data;
+        }
+
+        public byte[] CreerBMP()
+        {
+            tailleFichier = this.largeur * this.hauteur * 3 + 54;
+            byte[] data = new byte[this.tailleFichier];
             byte[] tempdata = new byte[4];
             data[0] = 66;
             data[1] = 77;
@@ -1278,14 +1305,14 @@ namespace PSI2
             }
 
             //Définiton de la taille de l'offset
-            int Offset = 54;
-            tempdata = Convertir_Int_To_Endian(Offset);
+            this.tailleOffset = 54;
+            tempdata = Convertir_Int_To_Endian(tailleOffset);
             for (int index = 10; index <= 13; index++)
             {
                 data[index] = tempdata[index - 10];
                 //Console.Write(data[index] + " ");
             }
-            Console.WriteLine("Taille de l'offset : " + Offset);
+            Console.WriteLine("Taille de l'offset : " + tailleOffset);
 
             tempdata = Convertir_Int_To_Endian(40);
             for (int i = 14; i <= 17; i++)
@@ -1294,58 +1321,81 @@ namespace PSI2
             }
 
             //Définition de la largeur
-            tempdata = Convertir_Int_To_Endian(largeur);
+            tempdata = Convertir_Int_To_Endian(this.largeur);
             for (int index = 18; index <= 21; index++)
             {
                 data[index] = tempdata[index - 18];
                 //Console.Write(data[index] + " ");
             }
-            Console.WriteLine("largeur : " + largeur);
-            tempdata = Convertir_Int_To_Endian(hauteur);
+            Console.WriteLine("largeur : " + this.largeur);
+            tempdata = Convertir_Int_To_Endian(this.hauteur);
             for (int index = 22; index <= 25; index++)
             {
                 data[index] = tempdata[index - 22];
                 //Console.Write(data[index] + " ");
             }
-            Console.WriteLine("hauteur : " + hauteur);
+            Console.WriteLine("hauteur : " + this.hauteur);
 
             data[26] = 0;
             data[27] = 0;
 
             //Définition Nb de bits couleur
-            int nbbits = 24;
-            tempdata = Convertir_Int_To_Endian(nbbits);
+            this.nbBitsCouleur = 24;
+            tempdata = Convertir_Int_To_Endian(this.nbBitsCouleur);
             for (int index = 28; index <= 30; index++)
             {
                 data[index] = tempdata[index - 28];
                 //Console.Write(data[index] + " ");
             }
-            Console.WriteLine("nbbits : " + nbbits);
+            Console.WriteLine("nbbits : " + this.nbBitsCouleur);
 
             for (int i = 30; i <= 53; i++)
             {
                 data[i] = 0;
             }
-            File.WriteAllBytes(filename, data);
+
+            int indexColonne = 0;
+            int indexLigne = 0;
+
+            image = new Pixel[hauteur, largeur]; // Affectation de la taille de la matrice
+            for (int index = 54; index <= (tailleFichier - 3); index += 3) // Lecture des pixels ( 3 bytes )
+            {
+
+                if (indexColonne == (largeur))
+                {
+                    indexColonne = 0;
+                    indexLigne++;
+                }
+                Pixel tempixel = new Pixel(data[index], data[index + 1], data[index + 2]);
+                image[indexLigne, indexColonne] = tempixel;
+
+                //Console.WriteLine("Index: " + index + "; " + myfile[index] + " " + myfile[index + 1] + " " + myfile[index + 2]);
+
+                indexColonne++;
+            }
+            
+
+            File.WriteAllBytes(this.filename, data);
             //AfficherTableauByte(data);
-            Process.Start(filename);
+            Process.Start(this.filename);
             return data;
         }
-        public void Mandelbrot(int hauteur, int longueur)
+
+        public void Mandelbrot()
         {
             Console.WriteLine("Création de la fractale");
             string filename = "fractale.bmp";
-            byte[] data = CreerBMP(filename, longueur, hauteur);
+            byte[] data = CreerBMP();
             Console.ReadKey();
-            Pixel[,] image = new Pixel[longueur, largeur];
+            Pixel[,] image = new Pixel[largeur, largeur];
             //Console.ReadKey();
             for (int  i=0; i<hauteur;i++)
             {
-                for (int j=0;j<longueur;j++)
+                for (int j=0;j< largeur; j++)
                 {
                     double a = (double)(i - hauteur / 2) / (double)(hauteur / 4);
                     
-                    double b = (double)(j - longueur / 2) / (double)(longueur / 4);
+                    double b = (double)(j - largeur / 2) / (double)(largeur / 4);
                     int iteration = 0;
                     while (iteration <100||a+b>16)
                     {
@@ -1358,7 +1408,7 @@ namespace PSI2
                     image[i,j] = new Pixel(255,255,255);
                 }
             }
-            byte[] imgbyte = ConvertirPixelMatrice(image);
+            byte[] imgbyte = ConvertirMatricePixel();
             for (int i=54; i<data.Length;i++)
             {
                 data[i] = imgbyte[i - 54];
@@ -1367,21 +1417,7 @@ namespace PSI2
             File.WriteAllBytes(filename, data);
             Process.Start(filename);
         }
-        public byte[] ConvertirPixelMatrice(Pixel[,] image)
-        {
-            byte[] bytearray = new byte[(image.GetLength(0) + image.GetLength(1))*3];
-            for (int i=0; i<image.GetLength(0);i++)
-            {
-                for (int j = 0; j < image.GetLength(1); i++)
-                {
-                    bytearray[i + j] = image[i,j].Red;
-                    bytearray[i + j + 1] = image[i, j].Green;
-                    bytearray[i + j + 2] = image[i, j].Blue;
-                }
-            }
-            AfficherTableauByte(bytearray);
-            return bytearray;
-        }
+
         public void RemplirNoir (Pixel[,] image)
         {
             for (int i=0;i<image.GetLength(0);i++)
@@ -1413,15 +1449,15 @@ namespace PSI2
             AfficherTableauInt(histogram_g);
             Console.WriteLine();
 
-            Pixel[,] histo_r = new Pixel[hauteur * largeur, 256];
-            for (int i = 0; i < 256; i++)
+            Pixel[,] histo_r = new Pixel[this.hauteur * this.largeur, 256];
+            for (int i = 0; i < 255; i++)
             {
                 for (int j = 0; j < histogram_r[i]; j++)
                 {
                     histo_r[i, j] = new Pixel(255, 0, 0);
                 }
             }
-            Pixel[,] histo_g = new Pixel[hauteur * largeur, 256];
+            Pixel[,] histo_g = new Pixel[this.hauteur * this.largeur, 256];
             for (int i = 0; i < 256; i++)
             {
                 for (int j = 0; j < histogram_g[i]; j++)
@@ -1429,7 +1465,7 @@ namespace PSI2
                     histo_g[i, j] = new Pixel(255, 0, 0);
                 }
             }
-            Pixel[,] histo_b = new Pixel[hauteur * largeur, 256];
+            Pixel[,] histo_b = new Pixel[this.hauteur * this.largeur, 256];
             for (int i = 0; i < 256; i++)
             {
                 for (int j = 0; j < histogram_b[i]; j++)

@@ -17,9 +17,13 @@ namespace PSI2
             //Console.WriteLine("Lecture");
             //MyImage image1 = new MyImage(filename);
             //image1.ToString(filename);
+            MyImage coco= new MyImage("test.bmp");
+            coco.Histograme();
             int hauteur = 100;
             int largeur = 100;
-            MyImage image = new MyImage("test.bmp",largeur,hauteur);
+            //MyImage image = new MyImage("test.bmp",largeur,hauteur);
+            //image.Histograme();
+            //image.Mandelbrot();
             Console.ReadKey();
             
         }
