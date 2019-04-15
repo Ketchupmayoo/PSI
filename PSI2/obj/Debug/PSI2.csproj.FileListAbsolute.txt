@@ -33,3 +33,10 @@ C:\Users\Kevin\Desktop\PSI2-i7\PSI2\obj\Debug\PSI2.csprojAssemblyReference.cache
 C:\Users\Kevin\Desktop\PSI2-i7\PSI2\obj\Debug\PSI2.csproj.CoreCompileInputs.cache
 C:\Users\Kevin\Desktop\PSI2-i7\PSI2\obj\Debug\PSI2.exe
 C:\Users\Kevin\Desktop\PSI2-i7\PSI2\obj\Debug\PSI2.pdb
+C:\Users\Kevin\Desktop\PSI\PSI2\obj\Debug\PSI2.csprojAssemblyReference.cache
+C:\Users\Kevin\Desktop\PSI\PSI2\obj\Debug\PSI2.csproj.CoreCompileInputs.cache
+C:\Users\Kevin\Desktop\PSI\PSI2\obj\Debug\PSI2.exe
+C:\Users\Kevin\Desktop\PSI\PSI2\obj\Debug\PSI2.pdb
+C:\Users\Kevin\Desktop\PSI\PSI2\bin\Debug\PSI2.exe.config
+C:\Users\Kevin\Desktop\PSI\PSI2\bin\Debug\PSI2.exe
+C:\Users\Kevin\Desktop\PSI\PSI2\bin\Debug\PSI2.pdb

@@ -6,7 +6,6 @@ namespace PSI2
 {
     class MyImage
     {
-        // ----------- TD1 -----------------
         #region Attributs
         private string imageType;
         private int tailleFichier;
@@ -17,11 +16,11 @@ namespace PSI2
         private Pixel[,] image;
         #endregion
 
+        #region Constructeurs
         /// <summary>
-        /// Constructeur 1
+        /// Déclaration du "Constructeur 1"
         /// </summary>
         /// <param name="fileName"></param>
-        
         public MyImage(string fileName)
         {
             byte[] myfile = null;
@@ -55,7 +54,7 @@ namespace PSI2
             }
             this.tailleOffset = Convertir_Endian_To_Int(tab);
             Console.WriteLine("Taille offset : " + tailleOffset);
-  
+
             // ● largeur et hauteur de l’image (int) 
             for (int index = 0; index < 4; index++)
             {
@@ -69,8 +68,8 @@ namespace PSI2
             }
             this.hauteur = Convertir_Endian_To_Int(tab);
             Console.WriteLine("hauteur : " + hauteur);
-            
-            
+
+
             // ● nombre de bits par couleur(int)  
             for (int index = 0; index < 2; index++)
             {
@@ -78,8 +77,8 @@ namespace PSI2
             }
             this.nbBitsCouleur = Convertir_Endian_To_Int(tab);
             Console.WriteLine("nbbc : " + nbBitsCouleur);
-            
-            
+
+
             // ● l’image par elle-même sur laquelle vous ferez les traitements proposés ensuite. (matrice de RGB) 
             int indexColonne = 0;
             int indexLigne = 0;
@@ -101,16 +100,16 @@ namespace PSI2
                 indexColonne++;
             }
         }
-       
         /// <summary>
-        /// Constructeur 2
+        /// Déclaration du "Constructeur 2"
         /// </summary>
         /// <param name="largeur"></param>
         /// <param name="hauteur"></param>
-        public MyImage(string filename,int largeur, int hauteur)
+        public MyImage(string filename, int largeur, int hauteur)
         {
             Mandelbrot(hauteur, largeur);
         }
+        #endregion
 
         #region Propriétés
         /// <summary>
@@ -123,8 +122,56 @@ namespace PSI2
         }
         #endregion
 
+        #region Methodes_Affichage
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="image"></param>
+        public void AfficherTableauPixel(Pixel[,] image)
+        {
+            for (int i = 0; i < image.GetLength(0); i++)
+            {
+                for (int j = 0; j < image.GetLength(1); j++)
+                {
+                    Console.Write(image[i, j].ToString() + " ; ");
+                }
+                Console.WriteLine();
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tab"></param>
+        public void AfficherTableauByte(byte[] tab)
+        {
+            for (int i = 0; i < tab.Length; i++)
+            {
+                Console.Write(tab[i]);
+            }
+        }
+        public void AfficherTableauInt(int[] tab)
+        {
+            for (int i = 0; i < tab.Length; i++)
+            {
+                Console.Write(tab[i]);
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tab"></param>
+        public void AfficherTableauString(string[] tab)
+        {
+            for (int i = 0; i < tab.Length; i++)
+            {
+                Console.Write(tab[i] + " ");
+            }
+        }
+        #endregion
+
         #region Méthodes
 
+        #region TD1
         /// <summary>
         /// 
         /// </summary>
@@ -180,46 +227,6 @@ namespace PSI2
             }
             this.nbBitsCouleur = Convertir_Endian_To_Int(tab);
             Console.WriteLine("nbbc : " + nbBitsCouleur);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="image"></param>
-        public void AfficherTableauPixel(Pixel[,] image)
-        {
-            for (int i = 0; i < image.GetLength(0); i++)
-            {
-                for (int j = 0; j < image.GetLength(1); j++)
-                {
-                    Console.Write(image[i, j].ToString() + " ; ");
-                }
-                Console.WriteLine();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tab"></param>
-        public void AfficherTableauByte(byte[] tab)
-        {
-            for (int i = 0; i < tab.Length; i++)
-            {
-                Console.Write(tab[i]);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tab"></param>
-        public void AfficherTableauString(string[] tab)
-        {
-            for (int i = 0; i < tab.Length; i++)
-            {
-                Console.Write(tab[i] + " ");
-            }
         }
 
         /// <summary>
@@ -428,8 +435,9 @@ namespace PSI2
 
             Process.Start(ImageToByte);
         }
-
-        // --------------------- TD 2 ----------------------------
+        #endregion
+        
+        #region TD2
         public void Noir_Blanc(string fileName)
         {
             byte[] myfile = File.ReadAllBytes(fileName);
@@ -1062,8 +1070,9 @@ namespace PSI2
 
             Process.Start(Retrecir);
         }
-
-        //   -----------------------   TD3  -------------------------
+        #endregion
+        
+        #region TD3
         public void Convolution (string fileName, string effet)
         {
             byte[] myfile = File.ReadAllBytes(fileName);
@@ -1242,8 +1251,9 @@ namespace PSI2
 
             return pixelTemp;
         }
-
-        //   -----------------------   TD4  -------------------------
+        #endregion
+        
+        #region TD4
         public byte[] CreerBMP(string filename, int largeur, int hauteur)
         {
             int tailleFichier = largeur * hauteur * 3 + 54;
@@ -1428,6 +1438,8 @@ namespace PSI2
                 }
             }
         }
+        #endregion
+
         #endregion
     }
 }
