@@ -15,7 +15,7 @@ using System.Drawing.Text;
 // Kevin LIM et Thomas NGO TD G
 namespace PSI2
 {
-    class MyImage
+    public class MyImage
     {
         
         #region Attributs
@@ -109,13 +109,12 @@ namespace PSI2
         #endregion
 
         #region Propriétés
-        public Pixel[,] Image
+        Pixel[,] Image
         {
             get { return image; }
             set { image = value; }
         }
 
-        public string ContentType { get; set; }
         #endregion
 
         #region Méthodes
@@ -124,7 +123,7 @@ namespace PSI2
         /// <summary>
         /// Affiche les données d'une image dans la console
         /// </summary>
-        public void AfficherTableauPixel(Pixel[,] image)
+        void AfficherTableauPixel(Pixel[,] image)
         {
             for (int i = 0; i < image.GetLength(0); i++)
             {
@@ -138,7 +137,7 @@ namespace PSI2
         /// <summary>
         /// Affiche les données d'un tableau de byte dans la console
         /// </summary>
-        public void AfficherTableauByte(byte[] tab)
+        void AfficherTableauByte(byte[] tab)
         {
             for (int i = 0; i < tab.Length; i++)
             {
@@ -148,7 +147,7 @@ namespace PSI2
         /// <summary>
         /// Affiche les données d'un tableau de string dans la console
         /// </summary>
-        public void AfficherTableauString(string[] tab)
+        void AfficherTableauString(string[] tab)
         {
             for (int i = 0; i < tab.Length; i++)
             {
@@ -253,7 +252,7 @@ namespace PSI2
         /// </summary>
         /// <param name="tab">Séquence d'octet</param>
         /// <returns>L'entier correspondant à la séquence d'octet</returns>
-        public int Convertir_Endian_To_Int(byte[] tab)
+        static public int Convertir_Endian_To_Int(byte[] tab)
         {
             string[] data1 = new string[tab.Length]; // Tableau de string pour travailler avec les hexadecimale
             for (int index = 0; index < tab.Length; index++)
@@ -1136,7 +1135,15 @@ namespace PSI2
             Process.Start(convolution);
 
         }
-        public Pixel ApplicationConvolution(Pixel[,] image, int[,] matrice_convolution, int x, int y)
+        /// <summary>
+        /// Calculer la valeur d'un pixel après application d'une matrice de convolution sur l'image
+        /// </summary>
+        /// <param name="image">matrice de pixel contenant l'image</param>
+        /// <param name="matrice_convolution">la matrice qui correspond à un effet choisi</param>
+        /// <param name="x">une coordonnée du pixel de sorti </param>
+        /// <param name="y">une coordonnée du pixel de sorti</param>
+        /// <returns></returns>
+        Pixel ApplicationConvolution(Pixel[,] image, int[,] matrice_convolution, int x, int y)
         {
             byte red = 0;
             byte green = 0;
@@ -1202,7 +1209,10 @@ namespace PSI2
         #endregion
 
         #region TD4
-        public void RemplirBlanc(Pixel[,] image)
+        /// <summary>
+        /// Remplir une matrice de pixel de pixel blanc
+        /// </summary>
+        private void RemplirBlanc(Pixel[,] image)
         {
             for (int i = 0; i < image.GetLength(0); i++)
             {
@@ -1212,6 +1222,9 @@ namespace PSI2
                 }
             }
         }
+        /// <summary>
+        /// Création de 3 images représentant les histogrammes de rouge, de vert, et de bleu sur l'image
+        /// </summary>
         public void Histogramme()
         {
             int[] histogram_r = new int[256];
@@ -1395,7 +1408,9 @@ namespace PSI2
             Process.Start(bleu);
 
         }
-
+        /// <summary>
+        /// Création d'une fractale
+        /// </summary>
         public void Mandelbrot()
         {
             double maxr = 0.6;
@@ -1441,24 +1456,32 @@ namespace PSI2
                         zy = (2 * tempzx * zy) + cy;
                     }
                     if (loopgo != loopmax)
+                    {
                         image[x, y] = new Pixel(255, 255, 255);
+                    }
+
                     else
+                    {
                         image[x, y] = new Pixel(0, 0, 0);
+                    }
 
                 }
             }
             //AfficherTableauPixel(image);
-            byte[] imgbyte = ConvertirMatricePixel(image);
+            byte[] imagebyte = ConvertirMatricePixel(image);
             //Console.WriteLine(imgbyte.Length);
             for (int i = 54; i < data.Length; i++)
             {
-                data[i] = imgbyte[i - 54];
+                data[i] = imagebyte[i - 54];
             }
             //AfficherTableauByte(data);
             File.WriteAllBytes(filename, data);
             Process.Start(filename);
         }
-        public void RemplirNoir(Pixel[,] image)
+        /// <summary>
+        /// Remplir une matrice de pixel de pixel noir
+        /// </summary>
+        private void RemplirNoir(Pixel[,] image)
         {
             for (int i = 0; i < image.GetLength(0); i++)
             {
@@ -1468,6 +1491,12 @@ namespace PSI2
                 }
             }
         }
+        /// <summary>
+        /// Créer un fichier bmp en ayant les informations de hauteur et de largeur
+        /// </summary>
+        /// <param name="hauteur"></param>
+        /// <param name="largeur"></param>
+        /// <returns></returns>
         public byte[] CreerBMP(int hauteur, int largeur)
         {
             tailleFichier = largeur * hauteur * 3 + 54;
@@ -1562,7 +1591,12 @@ namespace PSI2
             //Process.Start(this.filename);
             return data;
         }
-        public byte[] ConvertirMatricePixel(Pixel[,] image)
+        /// <summary>
+        /// Conversion d'une matrice de pixel en tableau de byte
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        private byte[] ConvertirMatricePixel(Pixel[,] image)
         {
             int cmp = 0;
             byte[] data = new byte[image.GetLength(0) * image.GetLength(1) * 3];
@@ -1584,6 +1618,9 @@ namespace PSI2
         #endregion
 
         #region TD5
+        /// <summary>
+        /// Superposer une image avec une autre image donnée en paramètre
+        /// </summary>
         public void CoderImage(MyImage Image2)
         {
             byte[] tempdata = new byte[4];
@@ -1771,6 +1808,11 @@ namespace PSI2
         #endregion
 
         #region Innovation
+        /// <summary>
+        /// Rajouter du texte sur une image
+        /// </summary>
+        /// <param name="fileName">nom complet de l'image</param>
+        /// <param name="text">texte à rajouter</param>
         public void TextOnImage(string fileName, string text)
         {
             System.Drawing.Image Innovation = System.Drawing.Bitmap.FromFile(fileName);
